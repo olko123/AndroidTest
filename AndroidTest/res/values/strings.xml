@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Android Test</string>
+    <string name="title_activity_main">Actualities</string>
+    <string name="img_preferable_size">300x300</string>
+
+</resources>
