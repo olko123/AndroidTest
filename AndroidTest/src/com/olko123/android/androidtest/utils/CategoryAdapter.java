@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import com.olko123.android.androidtest.R;
 
-public class CategoryAdapter extends ArrayAdapter<ArticleDescriptionWrapper> {
-	private List<ArticleDescriptionWrapper> itemList;
+public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
+	private List<ArticleDescription> itemList;
 	private Context context;
 
-	public CategoryAdapter(List<ArticleDescriptionWrapper> itemList,
+	public CategoryAdapter(List<ArticleDescription> itemList,
 			int textViewResourceId, Context context) {
 		super(context, textViewResourceId, itemList);
 		this.itemList = itemList;
@@ -31,7 +31,7 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescriptionWrapper> {
 		return 0;
 	}
 
-	public ArticleDescriptionWrapper getItem(int position) {
+	public ArticleDescription getItem(int position) {
 		if (itemList != null) {
 			return itemList.get(position);
 		}
@@ -48,7 +48,7 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescriptionWrapper> {
 			view = inflater.inflate(R.layout.listviewitem_layout, null);
 		}
 
-		ArticleDescriptionWrapper articleDescriptionWrapper = itemList
+		ArticleDescription articleDescriptionWrapper = itemList
 				.get(position);
 
 		TextView title = (TextView) view.findViewById(R.id.article_title);
@@ -66,11 +66,11 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescriptionWrapper> {
 		return view;
 	}
 
-	public List<ArticleDescriptionWrapper> getItemList() {
+	public List<ArticleDescription> getItemList() {
 		return itemList;
 	}
 
-	public void setItemList(List<ArticleDescriptionWrapper> itemList) {
+	public void setItemList(List<ArticleDescription> itemList) {
 		this.itemList = itemList;
 	}
 }

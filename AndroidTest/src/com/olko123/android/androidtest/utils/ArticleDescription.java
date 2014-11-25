@@ -4,12 +4,12 @@ import android.graphics.Bitmap;
 
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 
-public class ArticleDescriptionWrapper {
+public class ArticleDescription {
 	private String title;
 	private String subtitle;
 	private Bitmap image;
 
-	public ArticleDescriptionWrapper(ArticlesDescriptionDTO articlesDescription,
+	public ArticleDescription(ArticlesDescriptionDTO articlesDescription,
 			Bitmap image) {
 		this.title = articlesDescription.getTitle();
 		this.subtitle = articlesDescription.getSubtitle();

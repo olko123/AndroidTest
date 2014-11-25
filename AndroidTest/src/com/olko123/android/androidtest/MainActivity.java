@@ -23,7 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
-import com.olko123.android.androidtest.utils.ArticleDescriptionWrapper;
+import com.olko123.android.androidtest.utils.ArticleDescription;
 import com.olko123.android.androidtest.utils.CategoryAdapter;
 
 public class MainActivity extends Activity {
@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		adapter = new CategoryAdapter(
-				new ArrayList<ArticleDescriptionWrapper>(), 0, this);
+				new ArrayList<ArticleDescription>(), 0, this);
 		ListView listView = (ListView) findViewById(R.id.listview);
 		listView.setAdapter(adapter);
 
@@ -93,12 +93,12 @@ public class MainActivity extends Activity {
 
 	private class CollectArticleDataTask
 			extends
-			AsyncTask<List<ArticlesDescriptionDTO>, Void, List<ArticleDescriptionWrapper>> {
+			AsyncTask<List<ArticlesDescriptionDTO>, Void, List<ArticleDescription>> {
 
 		@Override
-		protected List<ArticleDescriptionWrapper> doInBackground(
+		protected List<ArticleDescription> doInBackground(
 				List<ArticlesDescriptionDTO>... params) {
-			List<ArticleDescriptionWrapper> list = new ArrayList<ArticleDescriptionWrapper>();
+			List<ArticleDescription> list = new ArrayList<ArticleDescription>();
 
 			for (ArticlesDescriptionDTO dto : params[0]) {
 				Bitmap image = null;
@@ -118,7 +118,7 @@ public class MainActivity extends Activity {
 					}
 				}
 
-				ArticleDescriptionWrapper articleDescriptionWrapper = new ArticleDescriptionWrapper(
+				ArticleDescription articleDescriptionWrapper = new ArticleDescription(
 						dto, image);
 				list.add(articleDescriptionWrapper);
 			}
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(List<ArticleDescriptionWrapper> result) {
+		protected void onPostExecute(List<ArticleDescription> result) {
 			super.onPostExecute(result);
 			adapter.setItemList(result);
 			adapter.notifyDataSetChanged();
