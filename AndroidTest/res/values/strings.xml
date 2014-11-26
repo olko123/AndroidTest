@@ -3,6 +3,8 @@
 
     <string name="app_name">Android Test</string>
     <string name="title_activity_main">Actualities</string>
-    <string name="img_preferable_size">300x300</string>
+    <string name="title_activity_article"></string>
+    <string name="preferable_size">300x300</string>
+    <string name="actualities_id">QWN0dWFsaXTDqXNBY3R1YWxpdMOpcw==</string>
 
 </resources>

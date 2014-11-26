@@ -12,42 +12,58 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.olko123.android.androidtest.adapters.CategoryAdapter;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 import com.olko123.android.androidtest.utils.ArticleDescription;
-import com.olko123.android.androidtest.utils.CategoryAdapter;
+import com.olko123.android.androidtest.utils.MyUrlBuilder;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemClickListener {
 	CategoryAdapter adapter;
+	List<ArticleDescription> articleDescriptions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		adapter = new CategoryAdapter(
-				new ArrayList<ArticleDescription>(), 0, this);
+		adapter = new CategoryAdapter(new ArrayList<ArticleDescription>(), 0,
+				this);
 		ListView listView = (ListView) findViewById(R.id.listview);
 		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(this);
 
 		try {
-			URL actualitiesUrl = new URL(
-					"http://figaro.service.yagasp.com/article/header/QWN0dWFsaXTDqXNBY3R1YWxpdMOpcw==");
+			URL actualitiesUrl = new MyUrlBuilder()
+					.getArticlesFromCategory(getResources().getString(
+							R.string.actualities_id));
 
 			new UpdateArticlesListTask().execute(actualitiesUrl);
+
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent intent = new Intent(this, ArticleActivity.class);
+		intent.putExtra("articleDescription", articleDescriptions.get(position));
+		startActivity(intent);
 	}
 
 	private class UpdateArticlesListTask extends
@@ -77,7 +93,6 @@ public class MainActivity extends Activity {
 				articles = Arrays.asList(a);
 
 			} catch (Exception e) {
-				// TODO
 			}
 
 			return articles;
@@ -86,7 +101,8 @@ public class MainActivity extends Activity {
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(List<ArticlesDescriptionDTO> result) {
-			new CollectArticleDataTask().execute(result);
+			if (result != null)
+				new CollectArticleDataTask().execute(result);
 		}
 
 	}
@@ -103,24 +119,18 @@ public class MainActivity extends Activity {
 			for (ArticlesDescriptionDTO dto : params[0]) {
 				Bitmap image = null;
 
-				URL url = null;
-				if (dto.getThumb().getLink() != null) {
-					String path = dto.getThumb().getLink();
-					path=path.replaceFirst(
-							"%dx%d",
-							getResources().getString(
-									R.string.img_preferable_size));
-					try {
-						url = new URL(path);
-						image = BitmapFactory.decodeStream(url.openConnection()
-								.getInputStream());
-					} catch (IOException e) {
-					}
+				try {
+					URL url = new MyUrlBuilder().getImageURL(dto.getThumb()
+							.getLink(),
+							getResources().getString(R.string.preferable_size));
+					image = BitmapFactory.decodeStream(url.openConnection()
+							.getInputStream());
+				} catch (IOException e) {
 				}
 
-				ArticleDescription articleDescriptionWrapper = new ArticleDescription(
+				ArticleDescription articleDescription = new ArticleDescription(
 						dto, image);
-				list.add(articleDescriptionWrapper);
+				list.add(articleDescription);
 			}
 
 			return list;
@@ -129,6 +139,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(List<ArticleDescription> result) {
 			super.onPostExecute(result);
+			articleDescriptions = result;
 			adapter.setItemList(result);
 			adapter.notifyDataSetChanged();
 		}

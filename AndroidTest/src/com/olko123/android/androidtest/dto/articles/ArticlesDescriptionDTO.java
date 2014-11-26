@@ -1,6 +1,9 @@
 package com.olko123.android.androidtest.dto.articles;
 
-public class ArticlesDescriptionDTO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ArticlesDescriptionDTO implements Parcelable {
 	private String id;
 	private String internalId;
 	private long update;
@@ -80,5 +83,46 @@ public class ArticlesDescriptionDTO {
 				+ ", update=" + update + ", date=" + date + ", ranking="
 				+ ranking + ", title=" + title + ", subtitle=" + subtitle
 				+ ", thumb=" + thumb + "]";
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(id);
+		dest.writeString(internalId);
+		dest.writeLong(update);
+		dest.writeLong(date);
+		dest.writeInt(ranking);
+		dest.writeString(title);
+		dest.writeString(subtitle);
+		dest.writeParcelable(thumb, flags);
+	}
+	
+	public static final Parcelable.Creator<ArticlesDescriptionDTO> CREATOR = new Parcelable.Creator<ArticlesDescriptionDTO>() {
+		
+		@Override
+		public ArticlesDescriptionDTO[] newArray(int size) {
+			return new ArticlesDescriptionDTO[size];
+		}
+		
+		@Override
+		public ArticlesDescriptionDTO createFromParcel(Parcel source) {
+			return new ArticlesDescriptionDTO(source);
+		}
+	};
+	
+	private ArticlesDescriptionDTO(Parcel source){
+		id=source.readString();
+		internalId=source.readString();
+		update=source.readLong();
+		date=source.readLong();
+		ranking=source.readInt();
+		title=source.readString();
+		subtitle=source.readString();
+		thumb=source.readParcelable(ThumbDTO.class.getClassLoader());
 	}
 }

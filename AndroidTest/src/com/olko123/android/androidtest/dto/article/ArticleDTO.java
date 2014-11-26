@@ -1,22 +1,52 @@
 package com.olko123.android.androidtest.dto.article;
 
 import java.net.URL;
+import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 public class ArticleDTO {
+	@SerializedName("_id")
 	private String id;
+	
+	@SerializedName("internalId")
 	private String internalId;
+	
+	@SerializedName("author")
 	private String author;
+	
+	@SerializedName("categoryId")
 	private String categoryId;
+	
+	@SerializedName("content")
 	private String content;
+	
+	@SerializedName("date")
 	private long date;
-	private LireAussisDTO lireAussi;
-	private PhotosDTO photos;
+	
+	@SerializedName("lireAussi")
+	private List<LireAussiDTO> lireAussi;
+	
+	@SerializedName("photos")
+	private List<PhotoDTO> photos;
+	
+	@SerializedName("shareArticleUrl")
 	private URL shareArticleUrl;
+	
+	@SerializedName("subtitle")
 	private String subtitle;
-	private TagsDTO tags;
+	
+	@SerializedName("tags")
+	private List<TagDTO> tags;
+	
+	@SerializedName("title")
 	private String title;
+	
+	@SerializedName("update")
 	private long update;
-	private VideosDTO videos;
+	
+	@SerializedName("videos")
+	private List<VideoDTO> videos;
 
 	public String getId() {
 		return id;
@@ -66,19 +96,19 @@ public class ArticleDTO {
 		this.date = date;
 	}
 
-	public LireAussisDTO getLireAussi() {
+	public List<LireAussiDTO> getLireAussi() {
 		return lireAussi;
 	}
 
-	public void setLireAussi(LireAussisDTO lireAussi) {
+	public void setLireAussi(List<LireAussiDTO> lireAussi) {
 		this.lireAussi = lireAussi;
 	}
 
-	public PhotosDTO getPhotos() {
+	public List<PhotoDTO> getPhotos() {
 		return photos;
 	}
 
-	public void setPhotos(PhotosDTO photos) {
+	public void setPhotos(List<PhotoDTO> photos) {
 		this.photos = photos;
 	}
 
@@ -98,11 +128,11 @@ public class ArticleDTO {
 		this.subtitle = subtitle;
 	}
 
-	public TagsDTO getTags() {
+	public List<TagDTO> getTags() {
 		return tags;
 	}
 
-	public void setTags(TagsDTO tags) {
+	public void setTags(List<TagDTO> tags) {
 		this.tags = tags;
 	}
 
@@ -122,11 +152,11 @@ public class ArticleDTO {
 		this.update = update;
 	}
 
-	public VideosDTO getVideos() {
+	public List<VideoDTO> getVideos() {
 		return videos;
 	}
 
-	public void setVideos(VideosDTO videos) {
+	public void setVideos(List<VideoDTO> videos) {
 		this.videos = videos;
 	}
 }

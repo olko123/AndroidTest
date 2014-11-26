@@ -1,4 +1,4 @@
-package com.olko123.android.androidtest.utils;
+package com.olko123.android.androidtest.adapters;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.olko123.android.androidtest.R;
+import com.olko123.android.androidtest.utils.ArticleDescription;
 
 public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 	private List<ArticleDescription> itemList;
@@ -51,15 +52,15 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		ArticleDescription articleDescriptionWrapper = itemList
 				.get(position);
 
-		TextView title = (TextView) view.findViewById(R.id.article_title);
+		TextView title = (TextView) view.findViewById(R.id.listview_article_title);
 		title.setText(articleDescriptionWrapper.getTitle());
 
-		TextView subtitle = (TextView) view.findViewById(R.id.article_subtitle);
+		TextView subtitle = (TextView) view.findViewById(R.id.listview_article_subtitle);
 		subtitle.setText(articleDescriptionWrapper.getSubtitle());
 
 		if (articleDescriptionWrapper.getImage() != null) {
 			ImageView articleImage = (ImageView) view
-					.findViewById(R.id.article_img);
+					.findViewById(R.id.listview_article_img);
 			articleImage.setImageBitmap(articleDescriptionWrapper.getImage());
 		}
 

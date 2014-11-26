@@ -5,30 +5,32 @@
     android:orientation="horizontal" >
 
     <LinearLayout
-        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/article_title"
+            android:id="@+id/listview_article_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:ellipsize="end"
+            android:lines="2"
             android:textColor="#0066CC"
-            android:lines="2" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/article_subtitle"
+            android:id="@+id/listview_article_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="2"
-             />
+            android:ellipsize="end"
+            android:lines="2" />
     </LinearLayout>
 
-    <ImageView 
-        android:id="@+id/article_img"
+    <ImageView
+        android:id="@+id/listview_article_img"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null" />
+
 </LinearLayout>
