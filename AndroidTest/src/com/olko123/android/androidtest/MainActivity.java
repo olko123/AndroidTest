@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -133,6 +134,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 				list.add(articleDescription);
 			}
 
+			Collections.sort(list);
 			return list;
 		}
 

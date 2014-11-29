@@ -6,7 +6,8 @@ import android.os.Parcelable;
 
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 
-public class ArticleDescription implements Parcelable {
+public class ArticleDescription implements Parcelable,
+		Comparable<ArticleDescription> {
 	private ArticlesDescriptionDTO articlesDescriptionDTO;
 	private Bitmap image;
 
@@ -59,9 +60,18 @@ public class ArticleDescription implements Parcelable {
 			return new ArticleDescription(source);
 		}
 	};
-	
+
 	public ArticleDescription(Parcel source) {
-		articlesDescriptionDTO = source.readParcelable(ArticlesDescriptionDTO.class.getClassLoader());
+		articlesDescriptionDTO = source
+				.readParcelable(ArticlesDescriptionDTO.class.getClassLoader());
 		image = source.readParcelable(null);
+	}
+
+	@Override
+	public int compareTo(ArticleDescription another) {
+		return (articlesDescriptionDTO.getRanking() > another.articlesDescriptionDTO
+				.getRanking() ? 1
+				: (articlesDescriptionDTO.getRanking() == another.articlesDescriptionDTO
+						.getRanking() ? 0 : -1));
 	}
 }

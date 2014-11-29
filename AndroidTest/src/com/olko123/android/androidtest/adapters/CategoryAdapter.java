@@ -39,7 +39,6 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		return null;
 	}
 
-	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
@@ -47,6 +46,8 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.listviewitem_layout, null);
+			
+			view.setTag(itemList.get(position));
 		}
 
 		ArticleDescription articleDescriptionWrapper = itemList.get(position);
@@ -59,10 +60,13 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 				.findViewById(R.id.listview_article_subtitle);
 		subtitle.setText(articleDescriptionWrapper.getSubtitle());
 
+		ImageView articleImage = (ImageView) view
+				.findViewById(R.id.listview_article_img);
 		if (articleDescriptionWrapper.getImage() != null) {
-			ImageView articleImage = (ImageView) view
-					.findViewById(R.id.listview_article_img);
+			articleImage.setVisibility(View.VISIBLE);
 			articleImage.setImageBitmap(articleDescriptionWrapper.getImage());
+		} else {
+			articleImage.setVisibility(View.GONE);
 		}
 
 		return view;
