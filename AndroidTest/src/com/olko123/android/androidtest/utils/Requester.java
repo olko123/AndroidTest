@@ -11,10 +11,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 public class Requester {
 
-	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz) throws IOException {
+	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz) throws IOException, JsonSyntaxException {
 		HttpURLConnection connection = (HttpURLConnection) requestUrl
 				.openConnection();
 		connection.setRequestMethod("GET");

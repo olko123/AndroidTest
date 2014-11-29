@@ -49,13 +49,14 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 			view = inflater.inflate(R.layout.listviewitem_layout, null);
 		}
 
-		ArticleDescription articleDescriptionWrapper = itemList
-				.get(position);
+		ArticleDescription articleDescriptionWrapper = itemList.get(position);
 
-		TextView title = (TextView) view.findViewById(R.id.listview_article_title);
+		TextView title = (TextView) view
+				.findViewById(R.id.listview_article_title);
 		title.setText(articleDescriptionWrapper.getTitle());
 
-		TextView subtitle = (TextView) view.findViewById(R.id.listview_article_subtitle);
+		TextView subtitle = (TextView) view
+				.findViewById(R.id.listview_article_subtitle);
 		subtitle.setText(articleDescriptionWrapper.getSubtitle());
 
 		if (articleDescriptionWrapper.getImage() != null) {

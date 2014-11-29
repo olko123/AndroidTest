@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.JsonSyntaxException;
 import com.olko123.android.androidtest.dto.article.ArticleDTO;
 import com.olko123.android.androidtest.utils.Article;
 import com.olko123.android.androidtest.utils.ArticleDescription;
@@ -33,8 +34,10 @@ public class ArticleActivity extends Activity {
 		TextView textView = (TextView) findViewById(R.id.article_title);
 		textView.setText(articleDescription.getTitle());
 
-		ImageView imageView = (ImageView) findViewById(R.id.article_image);
-		imageView.setImageBitmap(articleDescription.getImage());
+		if (articleDescription.getImage() != null) {
+			ImageView imageView = (ImageView) findViewById(R.id.article_image);
+			imageView.setImageBitmap(articleDescription.getImage());
+		}
 
 		TextView textView2 = (TextView) findViewById(R.id.article_subtitle);
 		textView2.setText(articleDescription.getSubtitle());
@@ -54,6 +57,8 @@ public class ArticleActivity extends Activity {
 				article = new Article(Requester.getParsedObject(url,
 						ArticleDTO.class));
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
 			}
 
