@@ -9,6 +9,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,8 @@ public class ArticleActivity extends Activity {
 				.getParcelable("articleDescription");
 
 		TextView textView = (TextView) findViewById(R.id.article_title);
-		textView.setText(articleDescription.getTitle());
+		String articleTitleHtml = articleDescription.getTitle();
+		textView.setText(articleTitleHtml);
 
 		if (articleDescription.getImage() != null) {
 			ImageView imageView = (ImageView) findViewById(R.id.article_image);
@@ -71,14 +73,15 @@ public class ArticleActivity extends Activity {
 				return;
 
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(articleDescription.getUpdate());
+			calendar.setTimeInMillis(articleDescription.getUpdate() * 1000);
 			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					"dd/MM/yyyy ' | Mise à jour : ' HH:mm", Locale.getDefault());
-			String authorDate = result.getAuthor() + ","
+					"dd/MM/yyyy ' | Mise Ã  jour : ' HH:mm", Locale.getDefault());
+			String authorDateHtml = "<font color=\"blue\">"
+					+ result.getAuthor() + "</font>" + ", "
 					+ dateFormat.format(calendar.getTime());
 
 			TextView textView = (TextView) findViewById(R.id.article_update_info);
-			textView.setText(authorDate);
+			textView.setText(Html.fromHtml(authorDateHtml));
 
 			WebView view = (WebView) findViewById(R.id.article_content);
 			view.loadData(result.getContent(), "text/html; charset=UTF-8", null);
