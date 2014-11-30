@@ -39,6 +39,7 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		return null;
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
@@ -46,7 +47,7 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.listviewitem_layout, null);
-			
+
 			view.setTag(itemList.get(position));
 		}
 

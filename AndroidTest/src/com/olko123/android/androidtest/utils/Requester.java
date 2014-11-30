@@ -14,8 +14,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 public class Requester {
+	private static final String[] emptyObjects = { "author" };
 
-	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz) throws IOException, JsonSyntaxException {
+	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz)
+			throws IOException, JsonSyntaxException {
 		HttpURLConnection connection = (HttpURLConnection) requestUrl
 				.openConnection();
 		connection.setRequestMethod("GET");
@@ -30,6 +32,18 @@ public class Requester {
 		JsonParser jsonParser = new JsonParser();
 		JsonObject jsonObject = jsonParser.parse(reader).getAsJsonObject();
 
+		jsonObject = fixJsonObject(jsonObject);
+
 		return gson.fromJson(jsonObject, clazz);
+	}
+
+	private static JsonObject fixJsonObject(JsonObject jsonObject) {
+		for (String key : emptyObjects) {
+			if (jsonObject.get(key).isJsonArray()) {
+				jsonObject.addProperty(key, "");
+			}
+		}
+
+		return jsonObject;
 	}
 }
