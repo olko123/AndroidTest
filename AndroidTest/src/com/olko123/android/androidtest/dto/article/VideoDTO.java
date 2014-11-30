@@ -2,9 +2,9 @@ package com.olko123.android.androidtest.dto.article;
 
 import java.net.URL;
 
-class VideoDTO {
+public class VideoDTO {
 	private String md5;
-	private long link;
+	private String link;
 	private int type;
 	private URL thumb;
 
@@ -16,11 +16,11 @@ class VideoDTO {
 		this.md5 = md5;
 	}
 
-	public long getLink() {
+	public String getLink() {
 		return link;
 	}
 
-	public void setLink(long link) {
+	public void setLink(String link) {
 		this.link = link;
 	}
 
