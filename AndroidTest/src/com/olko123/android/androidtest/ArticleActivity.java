@@ -32,18 +32,6 @@ public class ArticleActivity extends Activity {
 		articleDescription = (ArticleDescription) getIntent().getExtras()
 				.getParcelable("articleDescription");
 
-		TextView textView = (TextView) findViewById(R.id.article_title);
-		String articleTitleHtml = articleDescription.getTitle();
-		textView.setText(articleTitleHtml);
-
-		if (articleDescription.getImage() != null) {
-			ImageView imageView = (ImageView) findViewById(R.id.article_image);
-			imageView.setImageBitmap(articleDescription.getImage());
-		}
-
-		TextView textView2 = (TextView) findViewById(R.id.article_subtitle);
-		textView2.setText(articleDescription.getSubtitle());
-
 		new UpdateArticleTask().execute();
 	}
 
@@ -80,8 +68,19 @@ public class ArticleActivity extends Activity {
 					+ result.getAuthor() + "</font>" + ", "
 					+ dateFormat.format(calendar.getTime());
 
-			TextView textView = (TextView) findViewById(R.id.article_update_info);
-			textView.setText(Html.fromHtml(authorDateHtml));
+			TextView textView = (TextView) findViewById(R.id.article_title);
+			textView.setText(articleDescription.getTitle());
+
+			TextView textView2 = (TextView) findViewById(R.id.article_update_info);
+			textView2.setText(Html.fromHtml(authorDateHtml));
+			
+			if (articleDescription.getImage() != null) {
+				ImageView imageView = (ImageView) findViewById(R.id.article_image);
+				imageView.setImageBitmap(articleDescription.getImage());
+			}
+
+			TextView textView3 = (TextView) findViewById(R.id.article_subtitle);
+			textView3.setText(articleDescription.getSubtitle());
 
 			WebView view = (WebView) findViewById(R.id.article_content);
 			view.loadData(result.getContent(), "text/html; charset=UTF-8", null);

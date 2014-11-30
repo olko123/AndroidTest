@@ -6,5 +6,6 @@
     <string name="title_activity_article"></string>
     <string name="preferable_size">300x300</string>
     <string name="actualities_id">QWN0dWFsaXTDqXNBY3R1YWxpdMOpcw==</string>
+    <string name="header">ACTUALITÉS</string>
 
 </resources>
