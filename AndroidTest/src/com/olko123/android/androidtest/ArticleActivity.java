@@ -73,7 +73,7 @@ public class ArticleActivity extends Activity {
 
 			TextView textView2 = (TextView) findViewById(R.id.article_update_info);
 			textView2.setText(Html.fromHtml(authorDateHtml));
-			
+
 			if (articleDescription.getImage() != null) {
 				ImageView imageView = (ImageView) findViewById(R.id.article_image);
 				imageView.setImageBitmap(articleDescription.getImage());

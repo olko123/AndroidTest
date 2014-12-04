@@ -1,10 +1,6 @@
 package com.olko123.android.androidtest;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,8 +10,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -25,126 +19,76 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.olko123.android.androidtest.adapters.CategoryAdapter;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 import com.olko123.android.androidtest.utils.ArticleDescription;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
+import com.olko123.android.androidtest.utils.Requester;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 	CategoryAdapter adapter;
-	List<ArticleDescription> articleDescriptions;
+	List<ArticleDescription> articlesDescription = new ArrayList<ArticleDescription>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		adapter = new CategoryAdapter(articlesDescription, 0, this);
 
-		adapter = new CategoryAdapter(new ArrayList<ArticleDescription>(), 0,
-				this);
 		ListView listView = (ListView) findViewById(R.id.listview);
-		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);
+		listView.setAdapter(adapter);
 
-		try {
-			URL actualitiesUrl = new MyUrlBuilder()
-					.getArticlesFromCategory(getResources().getString(
-							R.string.actualities_id));
-
-			new UpdateArticlesListTask().execute(actualitiesUrl);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		new UpdateArticlesListTask().execute();
 	}
-
+	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		Intent intent = new Intent(this, ArticleActivity.class);
-		intent.putExtra("articleDescription", articleDescriptions.get(position));
+		intent.putExtra("articleDescription", articlesDescription.get(position));
 		startActivity(intent);
 	}
 
-	private class UpdateArticlesListTask extends
-			AsyncTask<URL, Void, List<ArticlesDescriptionDTO>> {
+	private class UpdateArticlesListTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
-		protected List<ArticlesDescriptionDTO> doInBackground(URL... params) {
-			List<ArticlesDescriptionDTO> articles = null;
-
+		protected Void doInBackground(Void... params) {
 			try {
-				HttpURLConnection conn = (HttpURLConnection) params[0]
-						.openConnection();
-				conn.setRequestMethod("GET");
+				URL actualitiesUrl = new MyUrlBuilder()
+						.getArticlesFromCategory(getResources().getString(
+								R.string.actualities_id));
 
-				conn.connect();
-				InputStream is = conn.getInputStream();
+				GsonBuilder builder = new GsonBuilder();
+				Gson gson = builder.create();
 
-				Reader reader = new InputStreamReader(is);
+				ArticlesDescriptionDTO[] articlesDescriptionDTOs = gson
+						.fromJson(Requester.getJsonObject(actualitiesUrl)
+								.getAsJsonArray().get(1),
+								ArticlesDescriptionDTO[].class);
 
-				GsonBuilder gsonBuilder = new GsonBuilder();
-				Gson gson = gsonBuilder.create();
-
-				JsonParser jsonParser = new JsonParser();
-				JsonArray jsonArray = jsonParser.parse(reader).getAsJsonArray();
-				ArticlesDescriptionDTO[] a = gson.fromJson(jsonArray.get(1),
-						ArticlesDescriptionDTO[].class);
-				articles = Arrays.asList(a);
-
-			} catch (Exception e) {
-			}
-
-			return articles;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void onPostExecute(List<ArticlesDescriptionDTO> result) {
-			if (result != null)
-				new CollectArticleDataTask().execute(result);
-		}
-
-	}
-
-	private class CollectArticleDataTask
-			extends
-			AsyncTask<List<ArticlesDescriptionDTO>, Void, List<ArticleDescription>> {
-
-		@Override
-		protected List<ArticleDescription> doInBackground(
-				List<ArticlesDescriptionDTO>... params) {
-			List<ArticleDescription> list = new ArrayList<ArticleDescription>();
-
-			for (ArticlesDescriptionDTO dto : params[0]) {
-				Bitmap image = null;
-
-				try {
-					URL url = new MyUrlBuilder().getImageURL(dto.getThumb()
-							.getLink(),
-							getResources().getString(R.string.preferable_size));
-					image = BitmapFactory.decodeStream(url.openConnection()
-							.getInputStream());
-				} catch (IOException e) {
+				List<ArticlesDescriptionDTO> articlesDescriptionDTO = Arrays
+						.asList(articlesDescriptionDTOs);
+				for (ArticlesDescriptionDTO art : articlesDescriptionDTO) {
+					articlesDescription.add(new ArticleDescription(art, null));
 				}
-
-				ArticleDescription articleDescription = new ArticleDescription(
-						dto, image);
-				list.add(articleDescription);
+				Collections.sort(articlesDescription);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-
-			Collections.sort(list);
-			return list;
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(List<ArticleDescription> result) {
-			super.onPostExecute(result);
-			articleDescriptions = result;
-			adapter.setItemList(result);
+		protected void onPostExecute(Void v) {
+			super.onPostExecute(null);
+			adapter.setItemList(articlesDescription);
 			adapter.notifyDataSetChanged();
 		}
-
 	}
 }

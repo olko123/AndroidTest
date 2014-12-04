@@ -9,6 +9,7 @@ import java.net.URL;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -16,8 +17,7 @@ import com.google.gson.JsonSyntaxException;
 public class Requester {
 	private static final String[] emptyObjects = { "author" };
 
-	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz)
-			throws IOException, JsonSyntaxException {
+	public static JsonElement getJsonObject(URL requestUrl) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) requestUrl
 				.openConnection();
 		connection.setRequestMethod("GET");
@@ -26,15 +26,26 @@ public class Requester {
 		InputStream is = connection.getInputStream();
 		Reader reader = new InputStreamReader(is);
 
+		JsonParser jsonParser = new JsonParser();
+		return jsonParser.parse(reader);
+	}
+
+	public static <T> T getParsedObject(URL requestUrl, Class<T> clazz)
+			throws IOException, JsonSyntaxException {
+		JsonElement element = getJsonObject(requestUrl);
+
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.create();
 
-		JsonParser jsonParser = new JsonParser();
-		JsonObject jsonObject = jsonParser.parse(reader).getAsJsonObject();
+		if (clazz.isArray()) {
+			element = element.getAsJsonArray();
+		} else {
+			element = element.getAsJsonObject();
+			element = fixJsonObject((JsonObject) element);
+		}
 
-		jsonObject = fixJsonObject(jsonObject);
-
-		return gson.fromJson(jsonObject, clazz);
+		T ret = gson.fromJson(element, clazz);
+		return ret;
 	}
 
 	private static JsonObject fixJsonObject(JsonObject jsonObject) {

@@ -29,6 +29,14 @@ public class ArticleDescription implements Parcelable,
 		return image;
 	}
 
+	public void setImage(Bitmap image) {
+		this.image = image;
+	}
+
+	public String getImageUrl() {
+		return articlesDescriptionDTO.getThumb().getLink();
+	}
+
 	public String getId() {
 		return articlesDescriptionDTO.getId();
 	}
