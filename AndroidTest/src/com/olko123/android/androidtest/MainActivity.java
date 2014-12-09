@@ -34,6 +34,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		adapter = new CategoryAdapter(articlesDescription, 0, this);
 
 		ListView listView = (ListView) findViewById(R.id.listview);
@@ -42,7 +43,21 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		new UpdateArticlesListTask().execute();
 	}
-	
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		adapter.startImagesDownload();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (adapter.getUpdateImageTask() != null) {
+			adapter.getUpdateImageTask().cancel(true);
+		}
+	}
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {

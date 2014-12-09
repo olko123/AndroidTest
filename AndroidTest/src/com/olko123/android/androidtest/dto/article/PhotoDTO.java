@@ -8,8 +8,8 @@ class PhotoDTO {
 	private String legend;
 	private String credits;
 	private int isDefault;
-	private int width;
-	private int height;
+	private double width;
+	private double height;
 
 	public URL getUrl() {
 		return url;
@@ -51,19 +51,19 @@ class PhotoDTO {
 		this.isDefault = isDefault;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(double width) {
 		this.width = width;
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(double height) {
 		this.height = height;
 	}
 }

@@ -22,6 +22,7 @@ import com.olko123.android.androidtest.utils.MyUrlBuilder;
 public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 	private List<ArticleDescription> itemList;
 	private Context context;
+	private AsyncTask<List<ArticleDescription>, Void, Void> asyncTask;
 
 	public CategoryAdapter(List<ArticleDescription> itemList,
 			int textViewResourceId, Context context) {
@@ -73,7 +74,6 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 			articleImage.setImageBitmap(articleDescription.getImage());
 		} else if (articleImage.getVisibility() != View.GONE) {
 			articleImage.setVisibility(View.GONE);
-			new UpdateImageTask().execute(articleDescription);
 		}
 		return view;
 	}
@@ -86,34 +86,47 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		this.itemList = itemList;
 	}
 
+	public AsyncTask<List<ArticleDescription>, Void, Void> getUpdateImageTask() {
+		return this.asyncTask;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void startImagesDownload() {
+		this.asyncTask = new UpdateImageTask().execute(this.itemList);
+	}
+
 	private class UpdateImageTask extends
-			AsyncTask<ArticleDescription, Void, Integer> {
+			AsyncTask<List<ArticleDescription>, Void, Void> {
 
 		@Override
-		protected Integer doInBackground(ArticleDescription... params) {
-			if (params[0].getImage() == null) {
-				try {
-					URL url = new MyUrlBuilder().getImageURL(
-							params[0].getImageUrl(),
-							context.getResources().getString(
-									R.string.preferable_size));
-					params[0].setImage(BitmapFactory.decodeStream(url
-							.openConnection().getInputStream()));
-					if (params[0].getImage() != null) {
-						return 0;
+		protected Void doInBackground(List<ArticleDescription>... params) {
+			for (ArticleDescription articleDescription : params[0]) {
+				if (isCancelled()) {
+					return null;
+				}
+				if (articleDescription.getImage() == null) {
+					try {
+						URL url = new MyUrlBuilder().getImageURL(
+								articleDescription.getImageUrl(),
+								context.getResources().getString(
+										R.string.preferable_size));
+						articleDescription.setImage(BitmapFactory
+								.decodeStream(url.openConnection()
+										.getInputStream()));
+						if (articleDescription.getImage() != null) {
+							publishProgress();
+						}
+					} catch (IOException e) {
 					}
-				} catch (IOException e) {
 				}
 			}
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Integer result) {
-			super.onPostExecute(result);
-			if (result != null) {
-				CategoryAdapter.this.notifyDataSetChanged();
-			}
+		protected void onProgressUpdate(Void... values) {
+			super.onProgressUpdate(values);
+			CategoryAdapter.this.notifyDataSetChanged();
 		}
 	}
 }
