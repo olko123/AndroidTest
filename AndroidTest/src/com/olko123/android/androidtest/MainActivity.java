@@ -4,91 +4,58 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.olko123.android.androidtest.adapters.CategoryAdapter;
-import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
-import com.olko123.android.androidtest.utils.ArticleDescription;
+import com.olko123.android.androidtest.adapters.CategoryPagerAdapter;
+import com.olko123.android.androidtest.dto.categories.CategoryDescriptionDTO;
+import com.olko123.android.androidtest.utils.Category;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 import com.olko123.android.androidtest.utils.Requester;
 
-public class MainActivity extends Activity implements OnItemClickListener {
-	CategoryAdapter adapter;
-	List<ArticleDescription> articlesDescription = new ArrayList<ArticleDescription>();
+public class MainActivity extends FragmentActivity {
+	ViewPager viewPager;
+	CategoryPagerAdapter adapter;
+	List<Category> categories = new ArrayList<Category>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		viewPager = (ViewPager) findViewById(R.id.pager);
+		adapter = new CategoryPagerAdapter(getSupportFragmentManager(),
+				getApplicationContext(), categories);
 
-		adapter = new CategoryAdapter(articlesDescription, 0, this);
-
-		ListView listView = (ListView) findViewById(R.id.listview);
-		listView.setOnItemClickListener(this);
-		listView.setAdapter(adapter);
-
-		new UpdateArticlesListTask().execute();
+		new UpdateCategoriesTask().execute();
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		adapter.startImagesDownload();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		if (adapter.getUpdateImageTask() != null) {
-			adapter.getUpdateImageTask().cancel(true);
-		}
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		Intent intent = new Intent(this, ArticleActivity.class);
-		intent.putExtra("articleDescription", articlesDescription.get(position));
-		startActivity(intent);
-	}
-
-	private class UpdateArticlesListTask extends AsyncTask<Void, Void, Void> {
+	private class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				URL actualitiesUrl = new MyUrlBuilder()
-						.getArticlesFromCategory(getResources().getString(
-								R.string.actualities_id));
+				URL url = new MyUrlBuilder()
+						.getCategories();
 
 				GsonBuilder builder = new GsonBuilder();
 				Gson gson = builder.create();
 
-				ArticlesDescriptionDTO[] articlesDescriptionDTOs = gson
-						.fromJson(Requester.getJsonObject(actualitiesUrl)
-								.getAsJsonArray().get(1),
-								ArticlesDescriptionDTO[].class);
+				CategoryDescriptionDTO[] categoryDescriptionDTOs = gson
+						.fromJson(Requester.getJsonObject(url)
+								.getAsJsonArray(),
+								CategoryDescriptionDTO[].class);
 
-				List<ArticlesDescriptionDTO> articlesDescriptionDTO = Arrays
-						.asList(articlesDescriptionDTOs);
-				for (ArticlesDescriptionDTO art : articlesDescriptionDTO) {
-					articlesDescription.add(new ArticleDescription(art, null));
+				for (CategoryDescriptionDTO cat : categoryDescriptionDTOs) {
+					categories.add(new Category(cat));
 				}
-				Collections.sort(articlesDescription);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (JsonSyntaxException e) {
@@ -102,8 +69,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		@Override
 		protected void onPostExecute(Void v) {
 			super.onPostExecute(null);
-			adapter.setItemList(articlesDescription);
-			adapter.notifyDataSetChanged();
+			viewPager.setAdapter(adapter);
 		}
 	}
 }

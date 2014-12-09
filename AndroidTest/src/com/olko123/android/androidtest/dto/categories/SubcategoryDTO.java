@@ -1,6 +1,9 @@
 package com.olko123.android.androidtest.dto.categories;
 
-public class SubcategoryDTO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SubcategoryDTO implements Parcelable {
 	private String id;
 	private String name;
 	private int ranking;
@@ -43,7 +46,40 @@ public class SubcategoryDTO {
 
 	@Override
 	public String toString() {
-		return "Subcategory [id=" + id + ", name=" + name + ", ranking=" + ranking
-				+ ", isVisible=" + isVisible + "]";
+		return "Subcategory [id=" + id + ", name=" + name + ", ranking="
+				+ ranking + ", isVisible=" + isVisible + "]";
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.id);
+		dest.writeString(this.name);
+		dest.writeInt(this.ranking);
+		dest.writeByte((byte) (this.isVisible ? 1 : 0));
+	}
+
+	private SubcategoryDTO(Parcel source) {
+		this.id = source.readString();
+		this.name = source.readString();
+		this.ranking = source.readInt();
+		this.isVisible = source.readByte() != 0;
+	}
+	
+	public static final Parcelable.Creator<SubcategoryDTO> CREATOR = new Parcelable.Creator<SubcategoryDTO>() {
+
+		@Override
+		public SubcategoryDTO[] newArray(int size) {
+			return new SubcategoryDTO[size];
+		}
+
+		@Override
+		public SubcategoryDTO createFromParcel(Parcel source) {
+			return new SubcategoryDTO(source);
+		}
+	};
 }
