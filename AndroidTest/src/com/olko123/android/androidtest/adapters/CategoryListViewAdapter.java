@@ -19,12 +19,12 @@ import com.olko123.android.androidtest.R;
 import com.olko123.android.androidtest.utils.ArticleDescription;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 
-public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
+public class CategoryListViewAdapter extends ArrayAdapter<ArticleDescription> {
 	private List<ArticleDescription> itemList;
 	private Context context;
 	private AsyncTask<List<ArticleDescription>, Void, Void> asyncTask;
 
-	public CategoryAdapter(List<ArticleDescription> itemList,
+	public CategoryListViewAdapter(List<ArticleDescription> itemList,
 			int textViewResourceId, Context context) {
 		super(context, textViewResourceId, itemList);
 		this.itemList = itemList;
@@ -95,6 +95,11 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		this.asyncTask = new UpdateImageTask().execute(this.itemList);
 	}
 
+	public void stopImageDownload() {
+		if (this.asyncTask != null)
+			this.asyncTask.cancel(true);
+	}
+
 	private class UpdateImageTask extends
 			AsyncTask<List<ArticleDescription>, Void, Void> {
 
@@ -126,7 +131,7 @@ public class CategoryAdapter extends ArrayAdapter<ArticleDescription> {
 		@Override
 		protected void onProgressUpdate(Void... values) {
 			super.onProgressUpdate(values);
-			CategoryAdapter.this.notifyDataSetChanged();
+			CategoryListViewAdapter.this.notifyDataSetChanged();
 		}
 	}
 }

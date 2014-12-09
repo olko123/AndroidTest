@@ -22,7 +22,7 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.olko123.android.androidtest.adapters.CategoryAdapter;
+import com.olko123.android.androidtest.adapters.CategoryListViewAdapter;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 import com.olko123.android.androidtest.utils.ArticleDescription;
 import com.olko123.android.androidtest.utils.Category;
@@ -31,18 +31,14 @@ import com.olko123.android.androidtest.utils.Requester;
 
 public class CategoryFragment extends Fragment implements OnItemClickListener {
 	Category category;
-	CategoryAdapter adapter;
-	
+	CategoryListViewAdapter adapter;
+
 	@Override
 	public void onPause() {
 		super.onPause();
+		adapter.stopImageDownload();
 	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,8 +51,8 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 			category = bundle.getParcelable("category");
 		}
 
-		adapter = new CategoryAdapter(category.getArticleDescriptions(), 0,
-				view.getContext());
+		adapter = new CategoryListViewAdapter(
+				category.getArticleDescriptions(), 0, view.getContext());
 
 		ListView listView = (ListView) view.findViewById(R.id.listview);
 		listView.setOnItemClickListener(this);
@@ -118,5 +114,9 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 			adapter.setItemList(category.getArticleDescriptions());
 			adapter.notifyDataSetChanged();
 		}
+	}
+
+	public CategoryListViewAdapter getCategoryListViewAdapter() {
+		return adapter;
 	}
 }

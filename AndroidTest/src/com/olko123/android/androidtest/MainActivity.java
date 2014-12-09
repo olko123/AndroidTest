@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity {
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		adapter = new CategoryPagerAdapter(getSupportFragmentManager(),
-				getApplicationContext(), categories);
+				getApplicationContext(), categories, viewPager);
 
 		new UpdateCategoriesTask().execute();
 	}
