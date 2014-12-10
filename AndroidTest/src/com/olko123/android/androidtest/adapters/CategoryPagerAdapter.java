@@ -11,7 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 import com.olko123.android.androidtest.CategoryFragment;
-import com.olko123.android.androidtest.utils.Category;
+import com.olko123.android.androidtest.utils.data.Category;
 
 public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 		OnPageChangeListener {
@@ -19,6 +19,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	Context context;
 	List<Category> categories;
 	ViewPager viewPager;
+	int activeFragment;
 
 	public CategoryPagerAdapter(FragmentManager fm, Context context,
 			List<Category> categories, ViewPager viewPager) {
@@ -34,6 +35,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	public Fragment getItem(int arg0) {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("category", categories.get(arg0));
+		bundle.putInt("item", arg0);
 
 		CategoryFragment categoryFragment = new CategoryFragment();
 		categoryFragment.setArguments(bundle);
@@ -58,10 +60,9 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		if (arg0 == ViewPager.SCROLL_STATE_DRAGGING
-				|| arg0 == ViewPager.SCROLL_STATE_SETTLING) {
+		if (arg0 == ViewPager.SCROLL_STATE_DRAGGING) {
 			for (int i = 0; i < getCount(); i++) {
-				stopImageDownloading(arg0);
+				stopImageDownloading(i);
 			}
 		}
 	}
@@ -73,6 +74,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	@Override
 	public void onPageSelected(int arg0) {
 		startImageDownload(arg0);
+		activeFragment = arg0;
 	}
 
 	private Fragment getFragment(int position) {

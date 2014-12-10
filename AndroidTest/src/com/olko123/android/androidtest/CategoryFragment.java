@@ -3,6 +3,7 @@ package com.olko123.android.androidtest;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,14 +26,24 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.olko123.android.androidtest.adapters.CategoryListViewAdapter;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
-import com.olko123.android.androidtest.utils.ArticleDescription;
-import com.olko123.android.androidtest.utils.Category;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 import com.olko123.android.androidtest.utils.Requester;
+import com.olko123.android.androidtest.utils.data.ArticleDescription;
+import com.olko123.android.androidtest.utils.data.Category;
 
 public class CategoryFragment extends Fragment implements OnItemClickListener {
 	Category category;
 	CategoryListViewAdapter adapter;
+	int item;
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (item == 0) {
+			adapter.startImagesDownload();
+		}
+
+	}
 
 	@Override
 	public void onPause() {
@@ -49,6 +61,7 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 
 		if (bundle != null) {
 			category = bundle.getParcelable("category");
+			item = bundle.getInt("item");
 		}
 
 		adapter = new CategoryListViewAdapter(
@@ -68,8 +81,9 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		Intent intent = new Intent(getActivity(), ArticleActivity.class);
-		intent.putExtra("articleDescription", category.getArticleDescriptions()
-				.get(position));
+		intent.putParcelableArrayListExtra("articleDescriptions",
+				(ArrayList<? extends Parcelable>) category
+						.getArticleDescriptions());
 		startActivity(intent);
 	}
 

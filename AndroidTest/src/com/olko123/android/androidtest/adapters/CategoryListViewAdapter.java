@@ -16,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.olko123.android.androidtest.R;
-import com.olko123.android.androidtest.utils.ArticleDescription;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
+import com.olko123.android.androidtest.utils.data.ArticleDescription;
 
 public class CategoryListViewAdapter extends ArrayAdapter<ArticleDescription> {
 	private List<ArticleDescription> itemList;
@@ -92,7 +92,8 @@ public class CategoryListViewAdapter extends ArrayAdapter<ArticleDescription> {
 
 	@SuppressWarnings("unchecked")
 	public void startImagesDownload() {
-		this.asyncTask = new UpdateImageTask().execute(this.itemList);
+		if (asyncTask == null || asyncTask.isCancelled())
+			this.asyncTask = new UpdateImageTask().execute(this.itemList);
 	}
 
 	public void stopImageDownload() {

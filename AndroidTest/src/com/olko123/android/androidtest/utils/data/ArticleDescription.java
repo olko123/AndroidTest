@@ -1,4 +1,4 @@
-package com.olko123.android.androidtest.utils;
+package com.olko123.android.androidtest.utils.data;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

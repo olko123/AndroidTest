@@ -16,9 +16,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.olko123.android.androidtest.adapters.CategoryPagerAdapter;
 import com.olko123.android.androidtest.dto.categories.CategoryDescriptionDTO;
-import com.olko123.android.androidtest.utils.Category;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 import com.olko123.android.androidtest.utils.Requester;
+import com.olko123.android.androidtest.utils.data.Category;
 
 public class MainActivity extends FragmentActivity {
 	ViewPager viewPager;

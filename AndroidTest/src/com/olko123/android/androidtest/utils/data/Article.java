@@ -1,4 +1,4 @@
-package com.olko123.android.androidtest.utils;
+package com.olko123.android.androidtest.utils.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
