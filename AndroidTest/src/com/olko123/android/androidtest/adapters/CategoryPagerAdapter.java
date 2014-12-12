@@ -25,7 +25,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	FragmentManager fragmentManager;
 	Context context;
 	List<Category> categories;
-	HashMap<String, List<ArticleDescription>> articleDesriptions;
+	HashMap<String, List<ArticleDescription>> articlesDesription;
 	ViewPager viewPager;
 	int activeFragment;
 
@@ -38,7 +38,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 		this.viewPager = viewPager;
 		this.viewPager.setOnPageChangeListener(this);
 		this.activeFragment = 0;
-		articleDesriptions = new HashMap<String, List<ArticleDescription>>();
+		articlesDesription = new HashMap<String, List<ArticleDescription>>();
 	}
 
 	@Override
@@ -46,22 +46,24 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 		Log.d(TAG, "getItem() called on item " + arg0);
 		String categoryName = categories.get(arg0).getCategoryName();
 
-		if (!articleDesriptions.containsKey(categoryName)) {
-			articleDesriptions.put(categoryName,
+		if (!articlesDesription.containsKey(categoryName)) {
+			articlesDesription.put(categoryName,
 					new ArrayList<ArticleDescription>());
 		}
 
 		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: new bundle instance");
 		Bundle bundle = new Bundle();
 
-		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: put category to bundle");
+		Log.i(TAG, "getItem() - [fragment " + arg0
+				+ "]: put category to bundle");
 		bundle.putParcelable("category", categories.get(arg0));
-		
-		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: put articlesDescription to bundle");
+
+		Log.i(TAG, "getItem() - [fragment " + arg0
+				+ "]: put articlesDescription to bundle");
 		bundle.putParcelableArrayList("articlesDescription",
-				(ArrayList<? extends Parcelable>) articleDesriptions
+				(ArrayList<? extends Parcelable>) articlesDesription
 						.get(categoryName));
-		
+
 		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: put item to bundle");
 		bundle.putInt("item", arg0);
 
@@ -75,11 +77,6 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	public int getCount() {
 		Log.d(TAG, "getCount() called");
 		return categories.size();
-	}
-
-	@Override
-	public CharSequence getPageTitle(int position) {
-		return categories.get(position).getCategoryName();
 	}
 
 	private String makeFragmentName(int position) {

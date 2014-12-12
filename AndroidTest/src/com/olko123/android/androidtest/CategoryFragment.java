@@ -3,6 +3,7 @@ package com.olko123.android.androidtest;
 import java.util.List;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -43,6 +45,10 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 				view.getContext());
 		listView.setAdapter(adapter);
 
+		TextView textView = (TextView) view.findViewById(R.id.pager_title);
+		textView.setText(category.getCategoryName());
+		textView.setBackgroundColor(Color.parseColor(getTitleColor()));
+
 		if (articlesDescription.isEmpty()) {
 			UpdateArticlesListTask updateArticlesListTask = new UpdateArticlesListTask(
 					adapter, articlesDescription);
@@ -50,6 +56,21 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 		}
 
 		return view;
+	}
+
+	private String getTitleColor() {
+		switch (item) {
+		case 0:
+			return "#0088CC";
+		case 1:
+			return "#CC0000";
+		case 2:
+			return "#33FF33";
+		case 3:
+			return "#6699BB";
+		default:
+			return "#0088CC";
+		}
 	}
 
 	private void getArgumentsFromBundle() {
