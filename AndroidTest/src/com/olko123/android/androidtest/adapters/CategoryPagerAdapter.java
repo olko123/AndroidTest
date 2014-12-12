@@ -87,9 +87,17 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	public void onPageScrollStateChanged(int arg0) {
 		Log.d(TAG, "onPageScrollStateChanged() to " + arg0);
 		if (arg0 == ViewPager.SCROLL_STATE_DRAGGING) {
+			Log.i(TAG, "onPageScrollStateChanged() - stop all image downloads");
 			for (int i = 0; i < getCount(); i++) {
 				stopImageDownloading(i);
 			}
+		}
+
+		if (arg0 == ViewPager.SCROLL_STATE_IDLE) {
+			Log.i(TAG,
+					"onPageScrollStateChanged() - start downloading images for fragment "
+							+ this.activeFragment);
+			startImageDownload(activeFragment);
 		}
 	}
 
@@ -100,7 +108,6 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	@Override
 	public void onPageSelected(int arg0) {
 		Log.d(TAG, "onPageSelected() on fragment " + arg0);
-		startImageDownload(arg0);
 		activeFragment = arg0;
 	}
 
