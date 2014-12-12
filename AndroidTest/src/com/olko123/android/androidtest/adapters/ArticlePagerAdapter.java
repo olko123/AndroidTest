@@ -1,31 +1,36 @@
 package com.olko123.android.androidtest.adapters;
 
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.olko123.android.androidtest.ArticleFragment;
-import com.olko123.android.androidtest.utils.data.ArticleDescription;
 
 public class ArticlePagerAdapter extends FragmentPagerAdapter {
-	FragmentManager fragmentManager;
-	List<ArticleDescription> articleDescriptions;
+	private static final String TAG = "ArticlePagerAdapter";
 
-	public ArticlePagerAdapter(FragmentManager fm,
-			List<ArticleDescription> articleDescriptions) {
+	FragmentManager fragmentManager;
+	String[] articleId;
+	String[] imageUrl;
+
+	public ArticlePagerAdapter(FragmentManager fm, String[] articlesId,
+			String[] imageUrl) {
 		super(fm);
 		this.fragmentManager = fm;
-		this.articleDescriptions = articleDescriptions;
+		this.articleId = articlesId;
+		this.imageUrl = imageUrl;
 	}
 
 	@Override
 	public Fragment getItem(int arg0) {
+		Log.d(TAG, "getItem() called on fragment " + arg0);
+
 		Bundle bundle = new Bundle();
-		bundle.putParcelable("articleDescription",
-				articleDescriptions.get(arg0));
+		bundle.putString("articlesId", articleId[arg0]);
+		bundle.putString("imageUrl", imageUrl[arg0]);
+		bundle.putInt("item", arg0);
 
 		ArticleFragment articleFragment = new ArticleFragment();
 		articleFragment.setArguments(bundle);
@@ -35,6 +40,7 @@ public class ArticlePagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return articleDescriptions.size();
+		Log.d(TAG, "getCount() called");
+		return articleId.length;
 	}
 }

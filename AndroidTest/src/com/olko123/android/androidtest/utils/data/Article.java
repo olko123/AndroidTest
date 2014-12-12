@@ -10,14 +10,30 @@ public class Article {
 	private static final String REGEX_CONTENT = "(?i)(<video )([^>]*)(md5=\\\")([^>]*)(\\\")([^>]*)(/>)";
 	private ArticleDTO articleDTO;
 
+	public Article() {
+		articleDTO = new ArticleDTO();
+	}
+
 	public Article(ArticleDTO articleDTO) {
 		this.articleDTO = articleDTO;
+	}
+
+	public String getTitle() {
+		return articleDTO.getTitle();
+	}
+
+	public String getSubtitle() {
+		return articleDTO.getSubtitle();
+	}
+
+	public long getUpdate() {
+		return articleDTO.getUpdate();
 	}
 
 	public String getAuthor() {
 		return articleDTO.getAuthor();
 	}
-
+	
 	public String getContent() {
 		Pattern pattern = Pattern.compile(REGEX_CONTENT);
 		Matcher matcher = pattern.matcher(articleDTO.getContent());
