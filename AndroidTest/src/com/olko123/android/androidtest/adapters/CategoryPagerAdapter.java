@@ -30,7 +30,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	int activeFragment;
 
 	public CategoryPagerAdapter(FragmentManager fm, Context context,
-			List<Category> categories, ViewPager viewPager) {
+			List<Category> categories, HashMap<String, List<ArticleDescription>> articlesDescription, ViewPager viewPager) {
 		super(fm);
 		fragmentManager = fm;
 		this.context = context;
@@ -38,18 +38,13 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 		this.viewPager = viewPager;
 		this.viewPager.setOnPageChangeListener(this);
 		this.activeFragment = 0;
-		articlesDesription = new HashMap<String, List<ArticleDescription>>();
+		this.articlesDesription = articlesDescription;
 	}
 
 	@Override
 	public Fragment getItem(int arg0) {
 		Log.d(TAG, "getItem() called on item " + arg0);
 		String categoryName = categories.get(arg0).getCategoryName();
-
-		if (!articlesDesription.containsKey(categoryName)) {
-			articlesDesription.put(categoryName,
-					new ArrayList<ArticleDescription>());
-		}
 
 		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: new bundle instance");
 		Bundle bundle = new Bundle();

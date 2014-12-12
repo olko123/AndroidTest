@@ -12,12 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.olko123.android.androidtest.adapters.CategoryListViewAdapter;
-import com.olko123.android.androidtest.asynkTasks.UpdateArticlesListTask;
 import com.olko123.android.androidtest.utils.data.ArticleDescription;
 import com.olko123.android.androidtest.utils.data.Category;
 
@@ -49,12 +48,8 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 		textView.setText(category.getCategoryName());
 		textView.setBackgroundColor(Color.parseColor(getTitleColor()));
 
-		if (articlesDescription.isEmpty()) {
-			UpdateArticlesListTask updateArticlesListTask = new UpdateArticlesListTask(
-					adapter, articlesDescription);
-			updateArticlesListTask.execute(category.getId());
-		}
-
+		adapter.setItemList(articlesDescription);
+		
 		return view;
 	}
 

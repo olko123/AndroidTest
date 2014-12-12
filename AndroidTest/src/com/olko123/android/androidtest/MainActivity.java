@@ -1,6 +1,7 @@
 package com.olko123.android.androidtest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 
 import com.olko123.android.androidtest.adapters.CategoryPagerAdapter;
 import com.olko123.android.androidtest.asynkTasks.UpdateCategoriesTask;
+import com.olko123.android.androidtest.utils.data.ArticleDescription;
 import com.olko123.android.androidtest.utils.data.Category;
 
 public class MainActivity extends FragmentActivity {
@@ -18,6 +20,7 @@ public class MainActivity extends FragmentActivity {
 	ViewPager viewPager;
 	CategoryPagerAdapter adapter;
 	List<Category> categories;
+	HashMap<String, List<ArticleDescription>> articlesDescription;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +29,13 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		categories = new ArrayList<Category>();
+		articlesDescription = new HashMap<String, List<ArticleDescription>>();
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		adapter = new CategoryPagerAdapter(getSupportFragmentManager(),
-				getApplicationContext(), categories, viewPager);
+				getApplicationContext(), categories, articlesDescription, viewPager);
 
 		UpdateCategoriesTask updateCategoriesTask = new UpdateCategoriesTask(
-				viewPager, adapter, categories);
+				viewPager, adapter, categories, articlesDescription);
 		updateCategoriesTask.execute();
 	}
 }
