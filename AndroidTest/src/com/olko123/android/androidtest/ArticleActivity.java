@@ -10,11 +10,11 @@ import com.olko123.android.androidtest.adapters.ArticlePagerAdapter;
 public class ArticleActivity extends FragmentActivity {
 	private static final String TAG = "ArticleActivity";
 
-	ViewPager viewPager;
-	ArticlePagerAdapter adapter;
-	String[] articlesId = null;
-	String[] imagesUrl = null;
-	int position;
+	private ViewPager viewPager;
+	private ArticlePagerAdapter adapter;
+	private String[] articlesId = null;
+	private String[] imagesUrl = null;
+	private int position;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +23,11 @@ public class ArticleActivity extends FragmentActivity {
 		setContentView(R.layout.articleview_layout);
 
 		viewPager = (ViewPager) findViewById(R.id.articles_pager);
+
 		articlesId = getIntent().getExtras().getStringArray("articlesId");
 		imagesUrl = getIntent().getExtras().getStringArray("imagesUrl");
 		position = getIntent().getExtras().getInt("position");
+
 		adapter = new ArticlePagerAdapter(getSupportFragmentManager(),
 				articlesId, imagesUrl);
 

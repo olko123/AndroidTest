@@ -4,40 +4,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 
 import com.olko123.android.androidtest.CategoryFragment;
 import com.olko123.android.androidtest.utils.data.ArticleDescription;
 import com.olko123.android.androidtest.utils.data.Category;
 
-public class CategoryPagerAdapter extends FragmentPagerAdapter implements
-		OnPageChangeListener {
+public class CategoryPagerAdapter extends FragmentPagerAdapter {
 	private static final String TAG = "CategoryPagerAdapter";
 
-	FragmentManager fragmentManager;
-	Context context;
 	List<Category> categories;
 	HashMap<String, List<ArticleDescription>> articlesDesription;
-	ViewPager viewPager;
-	int activeFragment;
 
-	public CategoryPagerAdapter(FragmentManager fm, Context context,
-			List<Category> categories, HashMap<String, List<ArticleDescription>> articlesDescription, ViewPager viewPager) {
+	public CategoryPagerAdapter(FragmentManager fm, List<Category> categories,
+			HashMap<String, List<ArticleDescription>> articlesDescription) {
 		super(fm);
-		fragmentManager = fm;
-		this.context = context;
 		this.categories = categories;
-		this.viewPager = viewPager;
-		this.viewPager.setOnPageChangeListener(this);
-		this.activeFragment = 0;
 		this.articlesDesription = articlesDescription;
 	}
 
@@ -72,59 +59,5 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter implements
 	public int getCount() {
 		Log.d(TAG, "getCount() called");
 		return categories.size();
-	}
-
-	private String makeFragmentName(int position) {
-		return "android:switcher:" + viewPager.getId() + ":" + position;
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-		Log.d(TAG, "onPageScrollStateChanged() to " + arg0);
-		if (arg0 == ViewPager.SCROLL_STATE_DRAGGING) {
-			Log.i(TAG, "onPageScrollStateChanged() - stop all image downloads");
-			for (int i = 0; i < getCount(); i++) {
-				stopImageDownloading(i);
-			}
-		}
-
-		if (arg0 == ViewPager.SCROLL_STATE_IDLE) {
-			Log.i(TAG,
-					"onPageScrollStateChanged() - start downloading images for fragment "
-							+ this.activeFragment);
-			startImageDownload(activeFragment);
-		}
-	}
-
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-	}
-
-	@Override
-	public void onPageSelected(int arg0) {
-		Log.d(TAG, "onPageSelected() on fragment " + arg0);
-		activeFragment = arg0;
-	}
-
-	private Fragment getFragment(int position) {
-		return fragmentManager.findFragmentByTag(makeFragmentName(position));
-	}
-
-	private void startImageDownload(int position) {
-		Log.d(TAG, "startImageDownload() called on fragment " + position);
-		Fragment fragment = getFragment(position);
-		if (fragment != null) {
-			((CategoryFragment) fragment).getCategoryListViewAdapter()
-					.startImagesDownload();
-		}
-	}
-
-	private void stopImageDownloading(int position) {
-		Log.d(TAG, "stopImageDownload() called on fragment " + position);
-		Fragment fragment = getFragment(position);
-		if (fragment != null) {
-			((CategoryFragment) fragment).getCategoryListViewAdapter()
-					.stopImageDownload();
-		}
 	}
 }

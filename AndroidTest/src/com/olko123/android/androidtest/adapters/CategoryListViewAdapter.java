@@ -1,32 +1,33 @@
 package com.olko123.android.androidtest.adapters;
 
-import java.io.IOException;
-import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.olko123.android.androidtest.R;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 import com.olko123.android.androidtest.utils.data.ArticleDescription;
+import com.squareup.picasso.Picasso;
 
-public class CategoryListViewAdapter extends ArrayAdapter<ArticleDescription> {
+public class CategoryListViewAdapter extends BaseAdapter {
 	private List<ArticleDescription> itemList;
 	private Context context;
-	private AsyncTask<List<ArticleDescription>, Void, Void> asyncTask;
+
+	static class ViewHolder {
+		public TextView title;
+		public TextView subtitle;
+		public ImageView image;
+	}
 
 	public CategoryListViewAdapter(List<ArticleDescription> itemList,
-			int textViewResourceId, Context context) {
-		super(context, textViewResourceId, itemList);
+			Context context) {
 		this.itemList = itemList;
 		this.context = context;
 	}
@@ -45,94 +46,48 @@ public class CategoryListViewAdapter extends ArrayAdapter<ArticleDescription> {
 		return null;
 	}
 
-	@SuppressLint("InflateParams")
+	@Override
+	public long getItemId(int i) {
+		return i;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
-		ArticleDescription articleDescription = null;
+		ArticleDescription articleDescription = itemList.get(position);
 		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.listviewitem_layout, null);
 
-			view.setTag(itemList.get(position));
+			ViewHolder viewHolder = new ViewHolder();
+			viewHolder.title = (TextView) view
+					.findViewById(R.id.listview_article_title);
+			viewHolder.subtitle = (TextView) view
+					.findViewById(R.id.listview_article_subtitle);
+			viewHolder.image = (ImageView) view
+					.findViewById(R.id.listview_article_img);
+
+			view.setTag(viewHolder);
 		}
-		articleDescription = itemList.get(position);
 
-		TextView title = (TextView) view
-				.findViewById(R.id.listview_article_title);
-		title.setText(articleDescription.getTitle());
+		ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-		TextView subtitle = (TextView) view
-				.findViewById(R.id.listview_article_subtitle);
-		subtitle.setText(articleDescription.getSubtitle());
+		viewHolder.title.setText(articleDescription.getTitle());
+		viewHolder.subtitle.setText(articleDescription.getSubtitle());
 
-		ImageView articleImage = (ImageView) view
-				.findViewById(R.id.listview_article_img);
-		if (articleDescription.getImage() != null) {
-			articleImage.setVisibility(View.VISIBLE);
-			articleImage.setImageBitmap(articleDescription.getImage());
-		} else if (articleImage.getVisibility() != View.GONE) {
-			articleImage.setVisibility(View.GONE);
-		}
-		return view;
-	}
-
-	public List<ArticleDescription> getItemList() {
-		return itemList;
-	}
-
-	public void setItemList(List<ArticleDescription> itemList) {
-		this.itemList = itemList;
-	}
-
-	public AsyncTask<List<ArticleDescription>, Void, Void> getUpdateImageTask() {
-		return this.asyncTask;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void startImagesDownload() {
-		if (asyncTask == null || asyncTask.isCancelled())
-			this.asyncTask = new UpdateImageTask().execute(this.itemList);
-	}
-
-	public void stopImageDownload() {
-		if (this.asyncTask != null)
-			this.asyncTask.cancel(true);
-	}
-
-	private class UpdateImageTask extends
-			AsyncTask<List<ArticleDescription>, Void, Void> {
-
-		@Override
-		protected Void doInBackground(List<ArticleDescription>... params) {
-			for (ArticleDescription articleDescription : params[0]) {
-				if (isCancelled()) {
-					return null;
-				}
-				if (articleDescription.getImage() == null) {
-					try {
-						URL url = new MyUrlBuilder().getImageURL(
+		try {
+			if (!articleDescription.getImageUrl().isEmpty()) {
+				Picasso.with(view.getContext())
+						.load(new MyUrlBuilder().getImageURL(
 								articleDescription.getImageUrl(),
 								context.getResources().getString(
-										R.string.preferable_size));
-						articleDescription.setImage(BitmapFactory
-								.decodeStream(url.openConnection()
-										.getInputStream()));
-						if (articleDescription.getImage() != null) {
-							publishProgress();
-						}
-					} catch (IOException e) {
-					}
-				}
+										R.string.preferable_size)).toString())
+						.into(viewHolder.image);
 			}
-			return null;
+		} catch (MalformedURLException e) {
 		}
 
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			super.onProgressUpdate(values);
-			CategoryListViewAdapter.this.notifyDataSetChanged();
-		}
+		return view;
 	}
 }

@@ -39,16 +39,17 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 
 		getArgumentsFromBundle();
 
-		adapter = new CategoryListViewAdapter(articlesDescription, 0,
-				view.getContext());
+		if (adapter == null) {
+			adapter = new CategoryListViewAdapter(articlesDescription,
+					view.getContext());
+		}
 		listView.setAdapter(adapter);
 
 		TextView textView = (TextView) view.findViewById(R.id.pager_title);
 		textView.setText(category.getCategoryName());
-		textView.setBackgroundColor(getResources().getIntArray(R.array.colors)[this.item]);
+		int[] colors = getResources().getIntArray(R.array.colors);
+		textView.setBackgroundColor(colors[this.item % colors.length]);
 
-		adapter.setItemList(articlesDescription);
-		
 		return view;
 	}
 
@@ -63,26 +64,6 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 
 			Log.d(TAG, "[fragment " + item + "]");
 		}
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		Log.d(TAG, "onResume() called on fragment " + item);
-
-		if (item == 0) {
-			adapter.startImagesDownload();
-		}
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-
-		Log.d(TAG, "onPause() called on fragment " + item);
-
-		adapter.stopImageDownload();
 	}
 
 	@Override
@@ -116,10 +97,6 @@ public class CategoryFragment extends Fragment implements OnItemClickListener {
 		}
 
 		return ret;
-	}
-
-	public CategoryListViewAdapter getCategoryListViewAdapter() {
-		return adapter;
 	}
 
 	private String[] getArticlesIdForIntent(int position) {

@@ -51,11 +51,11 @@ public class MyUrlBuilder {
 	// http://figaro.service.yagasp.com/image/%dx%d/get.js?url=http://www.lefigaro.fr/medias/2014/11/25/PHOf276cbf8-7409-11e4-bc5a-77511021ef86-805x453.jpg
 	public URL getImageURL(String link, String preferableSize) throws MalformedURLException{
 		URL ret = null;
-		
+
 		if(link != null && preferableSize != null){
 			ret = new URL(link.replaceFirst(pattern, preferableSize));
 		}
-		
+
 		return ret;
 	}
 }

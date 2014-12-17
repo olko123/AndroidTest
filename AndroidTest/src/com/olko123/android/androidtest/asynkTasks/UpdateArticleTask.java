@@ -1,14 +1,12 @@
 package com.olko123.android.androidtest.asynkTasks;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Log;
@@ -23,6 +21,7 @@ import com.olko123.android.androidtest.dto.article.ArticleDTO;
 import com.olko123.android.androidtest.utils.MyUrlBuilder;
 import com.olko123.android.androidtest.utils.Requester;
 import com.olko123.android.androidtest.utils.data.Article;
+import com.squareup.picasso.Picasso;
 
 public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 	private static final String TAG = "UpdateArticleTask";
@@ -31,10 +30,8 @@ public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 	private Article article;
 	private View view;
 	private String imageUrl;
-	private Bitmap image;
 
-	public UpdateArticleTask(String articlesId, View view,
-			String imageUrl) {
+	public UpdateArticleTask(String articlesId, View view, String imageUrl) {
 		this.articlesId = articlesId;
 		this.view = view;
 		this.imageUrl = imageUrl;
@@ -50,14 +47,6 @@ public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 			// get article data from web
 			article = new Article(Requester.getParsedObject(url,
 					ArticleDTO.class));
-			// update view with article data
-			publishProgress();
-
-			Context context = view.getContext();
-			url = new MyUrlBuilder().getImageURL(imageUrl, context
-					.getResources().getString(R.string.preferable_size));
-			image = BitmapFactory.decodeStream(url.openConnection()
-					.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JsonSyntaxException e) {
@@ -68,9 +57,9 @@ public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	@Override
-	protected void onProgressUpdate(Void... values) {
-		super.onProgressUpdate();
-		Log.d(TAG, "onProgressUpdate() started");
+	protected void onPostExecute(Void result) {
+		super.onPostExecute(result);
+		Log.d(TAG, "onPostExecute() started");
 
 		if (article == null) {
 			return;
@@ -96,17 +85,18 @@ public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 
 		WebView webView = (WebView) view.findViewById(R.id.article_content);
 		webView.loadData(article.getContent(), "text/html; charset=UTF-8", null);
-	}
 
-	@Override
-	protected void onPostExecute(Void result) {
-		super.onPostExecute(result);
-		Log.d(TAG, "onPostExecute() started");
-		if (image != null) {
-			ImageView imageView = (ImageView) view
-					.findViewById(R.id.article_image);
-			imageView.setImageBitmap(image);
+		ImageView imageView = (ImageView) view.findViewById(R.id.article_image);
+		try {
+			if (!imageUrl.isEmpty()) {
+				Picasso.with(view.getContext())
+						.load(new MyUrlBuilder().getImageURL(
+								imageUrl,
+								view.getResources().getString(
+										R.string.preferable_size)).toString())
+						.into(imageView);
+			}
+		} catch (MalformedURLException e) {
 		}
 	}
-
 }

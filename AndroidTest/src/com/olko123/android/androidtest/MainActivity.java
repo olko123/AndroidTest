@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity {
 		articlesDescription = new HashMap<String, List<ArticleDescription>>();
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		adapter = new CategoryPagerAdapter(getSupportFragmentManager(),
-				getApplicationContext(), categories, articlesDescription, viewPager);
+				categories, articlesDescription);
 
 		UpdateCategoriesTask updateCategoriesTask = new UpdateCategoriesTask(
 				viewPager, adapter, categories, articlesDescription);

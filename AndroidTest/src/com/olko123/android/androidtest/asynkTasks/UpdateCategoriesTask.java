@@ -81,7 +81,8 @@ public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 		}
 	}
 
-	private void getArticleDescription(Category category) throws MalformedURLException, JsonSyntaxException, IOException {
+	private void getArticleDescription(Category category)
+			throws MalformedURLException, JsonSyntaxException, IOException {
 		URL url = new MyUrlBuilder().getArticlesFromCategory(category.getId());
 		JsonElement element = Requester.getJsonObject(url).getAsJsonArray()
 				.get(1);
@@ -94,11 +95,11 @@ public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 		List<ArticleDescription> ad = new ArrayList<ArticleDescription>();
 		for (ArticlesDescriptionDTO art : articlesDescriptionDTOs) {
-			ad.add(new ArticleDescription(art, null));
+			ad.add(new ArticleDescription(art));
 		}
 		Collections.sort(ad);
-		
-		if(!articlesDescription.containsKey(category.getCategoryName())){
+
+		if (!articlesDescription.containsKey(category.getCategoryName())) {
 			articlesDescription.put(category.getCategoryName(), ad);
 		}
 	}
