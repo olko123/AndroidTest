@@ -1,7 +1,6 @@
 package com.olko123.android.androidtest.adapters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.os.Bundle;
@@ -12,26 +11,21 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 import com.olko123.android.androidtest.CategoryFragment;
-import com.olko123.android.androidtest.utils.data.ArticleDescription;
 import com.olko123.android.androidtest.utils.data.Category;
 
 public class CategoryPagerAdapter extends FragmentPagerAdapter {
 	private static final String TAG = "CategoryPagerAdapter";
 
-	List<Category> categories;
-	HashMap<String, List<ArticleDescription>> articlesDesription;
+	private List<Category> categories;
 
-	public CategoryPagerAdapter(FragmentManager fm, List<Category> categories,
-			HashMap<String, List<ArticleDescription>> articlesDescription) {
+	public CategoryPagerAdapter(FragmentManager fm, List<Category> categories) {
 		super(fm);
 		this.categories = categories;
-		this.articlesDesription = articlesDescription;
 	}
 
 	@Override
 	public Fragment getItem(int arg0) {
 		Log.d(TAG, "getItem() called on item " + arg0);
-		String categoryName = categories.get(arg0).getCategoryName();
 
 		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: new bundle instance");
 		Bundle bundle = new Bundle();
@@ -43,8 +37,7 @@ public class CategoryPagerAdapter extends FragmentPagerAdapter {
 		Log.i(TAG, "getItem() - [fragment " + arg0
 				+ "]: put articlesDescription to bundle");
 		bundle.putParcelableArrayList("articlesDescription",
-				(ArrayList<? extends Parcelable>) articlesDesription
-						.get(categoryName));
+				(ArrayList<? extends Parcelable>) categories.get(arg0).getArticlesDescription());
 
 		Log.i(TAG, "getItem() - [fragment " + arg0 + "]: put item to bundle");
 		bundle.putInt("item", arg0);

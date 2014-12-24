@@ -5,10 +5,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
@@ -24,31 +24,23 @@ import com.olko123.android.androidtest.utils.Requester;
 import com.olko123.android.androidtest.utils.data.ArticleDescription;
 import com.olko123.android.androidtest.utils.data.Category;
 
-public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
+public class UpdateCategoriesTask extends AsyncTask<Void, Void, List<Category>> {
 	private static final String TAG = "UpdateCategoryTask";
-	private List<Category> categories;
-	HashMap<String, List<ArticleDescription>> articlesDescription;
-	private ViewPager viewPager;
-	private CategoryPagerAdapter adapter;
 
-	public UpdateCategoriesTask(ViewPager viewPager,
-			CategoryPagerAdapter adapter, List<Category> categories,
-			HashMap<String, List<ArticleDescription>> articlesDescription) {
+	private ViewPager viewPager;
+	private FragmentManager fm;
+
+	public UpdateCategoriesTask(FragmentManager fm, ViewPager viewPager) {
+		this.fm = fm;
 		this.viewPager = viewPager;
-		this.adapter = adapter;
-		this.categories = categories;
-		this.articlesDescription = articlesDescription;
 	}
 
 	@Override
-	protected Void doInBackground(Void... params) {
+	protected List<Category> doInBackground(Void... params) {
 		Log.d(TAG, "doInBackground started");
-		try {
-			getCategories();
 
-			for (Category category : categories) {
-				getArticleDescription(category);
-			}
+		try {
+			return getCategories();
 
 		} catch (MalformedURLException e) {
 			Log.e(TAG, "doInBackground() - can't create categories URL");
@@ -65,8 +57,9 @@ public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 		return null;
 	}
 
-	private void getCategories() throws MalformedURLException,
-			JsonSyntaxException, IOException {
+	private List<Category> getCategories()
+			throws MalformedURLException, JsonSyntaxException, IOException {
+		List<Category> categories = new ArrayList<Category>();
 		URL url = new MyUrlBuilder().getCategories();
 		JsonElement element = Requester.getJsonObject(url).getAsJsonArray();
 
@@ -77,13 +70,20 @@ public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 				element, CategoryDescriptionDTO[].class);
 
 		for (CategoryDescriptionDTO cat : categoryDescriptionDTOs) {
-			categories.add(new Category(cat));
+			Category category = new Category(cat);
+			List<ArticleDescription> articlesDescription = getArticleDescription(category.getId());
+			category.setArticlesDescription(articlesDescription);
+		
+			categories.add(category);
 		}
+
+		return categories;
 	}
 
-	private void getArticleDescription(Category category)
+	private List<ArticleDescription> getArticleDescription(String id)
 			throws MalformedURLException, JsonSyntaxException, IOException {
-		URL url = new MyUrlBuilder().getArticlesFromCategory(category.getId());
+		List<ArticleDescription> articlesDescription = new ArrayList<ArticleDescription>();
+		URL url = new MyUrlBuilder().getArticlesFromCategory(id);
 		JsonElement element = Requester.getJsonObject(url).getAsJsonArray()
 				.get(1);
 
@@ -93,21 +93,20 @@ public class UpdateCategoriesTask extends AsyncTask<Void, Void, Void> {
 		ArticlesDescriptionDTO[] articlesDescriptionDTOs = gson.fromJson(
 				element, ArticlesDescriptionDTO[].class);
 
-		List<ArticleDescription> ad = new ArrayList<ArticleDescription>();
 		for (ArticlesDescriptionDTO art : articlesDescriptionDTOs) {
-			ad.add(new ArticleDescription(art));
+			articlesDescription.add(new ArticleDescription(art));
 		}
-		Collections.sort(ad);
-
-		if (!articlesDescription.containsKey(category.getCategoryName())) {
-			articlesDescription.put(category.getCategoryName(), ad);
-		}
+		Collections.sort(articlesDescription);
+		
+		return articlesDescription;
 	}
 
 	@Override
-	protected void onPostExecute(Void result) {
+	protected void onPostExecute(List<Category> result) {
 		super.onPostExecute(result);
 		Log.d(TAG, "onPostExecute() called");
+
+		CategoryPagerAdapter adapter = new CategoryPagerAdapter(fm, result);
 		viewPager.setAdapter(adapter);
 	}
 }

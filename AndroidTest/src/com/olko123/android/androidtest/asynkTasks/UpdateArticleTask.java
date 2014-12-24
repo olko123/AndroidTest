@@ -23,30 +23,26 @@ import com.olko123.android.androidtest.utils.Requester;
 import com.olko123.android.androidtest.utils.data.Article;
 import com.squareup.picasso.Picasso;
 
-public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
+public class UpdateArticleTask extends AsyncTask<URL, Void, Article> {
 	private static final String TAG = "UpdateArticleTask";
 
-	private String articlesId;
-	private Article article;
 	private View view;
 	private String imageUrl;
 
-	public UpdateArticleTask(String articlesId, View view, String imageUrl) {
-		this.articlesId = articlesId;
+	public UpdateArticleTask(View view, String imageUrl) {
 		this.view = view;
 		this.imageUrl = imageUrl;
 	}
 
 	@Override
-	protected Void doInBackground(Void... values) {
+	protected Article doInBackground(URL... values) {
 		Log.d(TAG, "doInBackground() started");
 
 		try {
-			URL url = new MyUrlBuilder().getArticle(articlesId);
-
 			// get article data from web
-			article = new Article(Requester.getParsedObject(url,
+			Article article = new Article(Requester.getParsedObject(values[0],
 					ArticleDTO.class));
+			return article;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JsonSyntaxException e) {
@@ -57,8 +53,8 @@ public class UpdateArticleTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	@Override
-	protected void onPostExecute(Void result) {
-		super.onPostExecute(result);
+	protected void onPostExecute(Article article) {
+		super.onPostExecute(article);
 		Log.d(TAG, "onPostExecute() started");
 
 		if (article == null) {

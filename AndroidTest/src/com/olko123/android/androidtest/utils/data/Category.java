@@ -1,46 +1,25 @@
 package com.olko123.android.androidtest.utils.data;
 
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.olko123.android.androidtest.dto.categories.CategoryDescriptionDTO;
 
 public class Category implements Parcelable {
-	// private CategoryDescriptionDTO categoryDescriptionDTO = new
-	// CategoryDescriptionDTO();
-	// private List<ArticleDescription> articleDescriptions = new
-	// ArrayList<ArticleDescription>();
 
 	private String categoryName;
 	private String id;
 	private int ranking;
+	private List<ArticleDescription> articlesDescription;
 
 	public Category(CategoryDescriptionDTO categoryDescriptionDTO) {
-		// this.categoryDescriptionDTO = categoryDescriptionDTO;
-		// articleDescriptions = new ArrayList<ArticleDescription>();
 		this.categoryName = categoryDescriptionDTO.getCategory();
 		this.id = categoryDescriptionDTO.getSubcategories().get(0).getId();
 		this.ranking = categoryDescriptionDTO.getSubcategories().get(0)
 				.getRanking();
 	}
-
-	// public List<ArticleDescription> getArticleDescriptions() {
-	// return articleDescriptions;
-	// }
-
-	// public void setArticleDescriptions(
-	// List<ArticleDescription> articleDescriptions) {
-	// this.articleDescriptions = articleDescriptions;
-	// }
-
-	// public CategoryDescriptionDTO getCategoryDescriptionDTO() {
-	// return categoryDescriptionDTO;
-	// }
-
-	// public void setCategoryDescriptionDTO(
-	// CategoryDescriptionDTO categoryDescriptionDTO) {
-	// this.categoryDescriptionDTO = categoryDescriptionDTO;
-	// }
 
 	public String getCategoryName() {
 		return categoryName;
@@ -73,21 +52,23 @@ public class Category implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// dest.writeParcelable(categoryDescriptionDTO, flags);
-		// dest.writeList(articleDescriptions);
 		dest.writeString(categoryName);
 		dest.writeString(id);
 		dest.writeInt(ranking);
 	}
 
 	private Category(Parcel source) {
-		// this.categoryDescriptionDTO = source
-		// .readParcelable(CategoryDescriptionDTO.class.getClassLoader());
-		// source.readList(articleDescriptions,
-		// ArticleDescription.class.getClassLoader());
 		this.categoryName = source.readString();
 		this.id = source.readString();
 		this.ranking = source.readInt();
+	}
+
+	public List<ArticleDescription> getArticlesDescription() {
+		return articlesDescription;
+	}
+
+	public void setArticlesDescription(List<ArticleDescription> articlesDescription) {
+		this.articlesDescription = articlesDescription;
 	}
 
 	public static final Parcelable.Creator<Category> CREATOR = new Parcelable.Creator<Category>() {

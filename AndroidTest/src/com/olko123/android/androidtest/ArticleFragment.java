@@ -1,5 +1,8 @@
 package com.olko123.android.androidtest;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.olko123.android.androidtest.asynkTasks.UpdateArticleTask;
+import com.olko123.android.androidtest.utils.MyUrlBuilder;
 
 public class ArticleFragment extends Fragment {
 	private static final String TAG = "ArticleFragment";
 
-	String articlesId;
-	String imageUrl;
-	int item;
+	private String articlesId;
+	private String imageUrl;
+	private int item;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -45,8 +49,12 @@ public class ArticleFragment extends Fragment {
 	}
 
 	private void setData(View view) {
-		UpdateArticleTask updateArticleTask = new UpdateArticleTask(articlesId,
-				view, imageUrl);
-		updateArticleTask.execute();
+		try {
+			URL url = new MyUrlBuilder().getArticle(articlesId);
+			UpdateArticleTask updateArticleTask = new UpdateArticleTask(view,
+					imageUrl);
+			updateArticleTask.execute(url);
+		} catch (MalformedURLException e) {
+		}
 	}
 }
