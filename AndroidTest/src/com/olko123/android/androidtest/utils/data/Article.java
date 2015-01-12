@@ -34,6 +34,7 @@ public class Article {
 		return articleDTO.getAuthor();
 	}
 	
+	
 	public String getContent() {
 		Pattern pattern = Pattern.compile(REGEX_CONTENT);
 		Matcher matcher = pattern.matcher(articleDTO.getContent());

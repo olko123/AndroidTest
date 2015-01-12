@@ -6,75 +6,55 @@ import android.os.Parcelable;
 import com.olko123.android.androidtest.dto.articles.ArticlesDescriptionDTO;
 
 public class ArticleDescription implements Parcelable,
-        Comparable<ArticleDescription> {
-    private String title;
-    private String subtitle;
-    private String imageUrl;
-    private String id;
-    private int ranking;
+		Comparable<ArticleDescription> {
+	private ArticlesDescriptionDTO articleDescription;
 
-    public ArticleDescription(ArticlesDescriptionDTO articlesDescriptionDTO) {
-        this.title = articlesDescriptionDTO.getTitle();
-        this.subtitle = articlesDescriptionDTO.getSubtitle();
-        this.imageUrl = articlesDescriptionDTO.getThumb().getLink();
-        this.id = articlesDescriptionDTO.getId();
-        this.ranking = articlesDescriptionDTO.getRanking();
-    }
+	public ArticleDescription(ArticlesDescriptionDTO articlesDescriptionDTO) {
+		this.articleDescription = articlesDescriptionDTO;
+	}
+	
+	public ArticlesDescriptionDTO getArticleDescription() {
+		return articleDescription;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public void setArticleDescription(ArticlesDescriptionDTO articleDescription) {
+		this.articleDescription = articleDescription;
+	}
 
-    public String getSubtitle() {
-        return subtitle;
-    }
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeParcelable(articleDescription, flags);
+	}
 
-    public String getId() {
-        return id;
-    }
+	public static final Parcelable.Creator<ArticleDescription> CREATOR = new Parcelable.Creator<ArticleDescription>() {
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+		@Override
+		public ArticleDescription[] newArray(int size) {
+			return new ArticleDescription[size];
+		}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(subtitle);
-        dest.writeString(imageUrl);
-        dest.writeString(id);
-        dest.writeInt(ranking);
-    }
+		@Override
+		public ArticleDescription createFromParcel(Parcel source) {
+			return new ArticleDescription(source);
+		}
+	};
 
-    public static final Parcelable.Creator<ArticleDescription> CREATOR = new Parcelable.Creator<ArticleDescription>() {
+	public ArticleDescription(Parcel source) {
+		this.articleDescription = source
+				.readParcelable(ArticlesDescriptionDTO.class.getClassLoader());
+	}
 
-        @Override
-        public ArticleDescription[] newArray(int size) {
-            return new ArticleDescription[size];
-        }
-
-        @Override
-        public ArticleDescription createFromParcel(Parcel source) {
-            return new ArticleDescription(source);
-        }
-    };
-
-    public ArticleDescription(Parcel source) {
-        this.title = source.readString();
-        this.subtitle = source.readString();
-        this.imageUrl = source.readString();
-        this.id = source.readString();
-        this.ranking = source.readInt();
-    }
-
-    @Override
-    public int compareTo(ArticleDescription another) {
-        return (this.ranking > another.ranking ? 1
-                : (this.ranking == another.ranking ? 0 : -1));
-    }
+	@Override
+	public int compareTo(ArticleDescription another) {
+		return (this.articleDescription.getRanking() > another.getArticleDescription().getRanking() 
+				? 1
+				: (this.articleDescription.getRanking() == another.getArticleDescription().getRanking() 
+					? 0	
+					: -1));
+	}
 }

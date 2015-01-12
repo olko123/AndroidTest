@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-import com.olko123.android.androidtest.asynkTasks.UpdateCategoriesTask;
+import com.olko123.android.androidtest.categoryview.UpdateCategoriesTask;
 
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
@@ -18,6 +18,8 @@ public class MainActivity extends FragmentActivity {
 
 		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-		new UpdateCategoriesTask(getSupportFragmentManager(), viewPager).execute();
+		UpdateCategoriesTask updateCategoriesTask = new UpdateCategoriesTask(
+				getSupportFragmentManager(), viewPager);
+		updateCategoriesTask.execute(AppModel.getInstance());
 	}
 }
